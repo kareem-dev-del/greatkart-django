@@ -1,5 +1,78 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
+from store.models import Product 
+from .models  import Cart, CartItem
+from django.core.exceptions import ObjectDoesNotExist
 
-# Create your views here.
-def cart(request):
-    return render(request,'store/cart.html')
+
+from django.http import HttpResponse
+# هذه الدالة مسؤولة عن إرجاع session id الخاص بالمستخدم
+def _cart_id(request):
+    # نحاول الحصول على session key الحالي
+    cart = request.session.session_key
+    
+    # لو مفيش session key (يعني أول مرة يدخل)
+    if not cart:
+        cart = request.session.create()   # ننشئ session جديدة
+    
+    return cart
+
+
+
+# دالة إضافة منتج إلى السلة
+def add_cart(request, product_id):
+
+    # الحصول على المنتج الذي يريد المستخدم إضافته
+    product = get_object_or_404(Product, id=product_id)
+
+    # أولًا نحاول إيجاد السلة الخاصة بالمستخدم بناءً على session id
+    try:
+        cart = Cart.objects.get(cart_id=_cart_id(request))
+    except Cart.DoesNotExist:
+        # لو السلة غير موجودة، ننشئ واحدة جديدة
+        cart = Cart.objects.create(
+            cart_id=_cart_id(request)
+        )
+    cart.save()   # حفظ السلة (رغم أن create يحفظ تلقائيًا، لكن لا ضرر)
+
+    
+    # ثانيًا نحاول إيجاد العنصر داخل السلة (CartItem)
+    try:
+        cart_item = CartItem.objects.get(product=product, cart=cart)
+        # لو موجود بالفعل → نزيد الكمية
+        cart_item.quantity += 1
+        cart_item.save()
+    except CartItem.DoesNotExist:
+        # لو المنتج لسه أول مرة يدخل السلة → ننشئ عنصر جديد
+        cart_item = CartItem.objects.create(
+            product=product,
+            quantity=1,
+            cart=cart
+        )
+        cart_item.save()
+
+    return HttpResponse(cart_item.quantity)
+    exit
+    # بعد الانتهاء نعيد التوجيه إلى صفحة السلة
+    return redirect('cart')
+
+
+
+# دالة عرض السلة
+def cart(request, total=0,quantity=0,cart_item=None):
+    try:
+        cart = Cart.objects.get(cart_id=_cart_id(request))
+        cart_items= CartItem.objects.filter(cart=cart, is_active=True)
+        for cart_item in cart_items:
+            total += (cart_item.product.price * cart_item.quantity)
+            quantity += cart_item.quantity
+    except ObjectDoesNotExist:
+      pass
+
+    
+
+    context =(
+        'total': total,
+        'quantity': quantity,
+       'cart_items' : cart_items,
+    )
+    return render(request, 'store/cart.html',context)
