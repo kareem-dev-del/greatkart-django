@@ -50,8 +50,6 @@ def add_cart(request, product_id):
         )
         cart_item.save()
 
-    return HttpResponse(cart_item.quantity)
-    exit
     # بعد الانتهاء نعيد التوجيه إلى صفحة السلة
     return redirect('cart')
 
