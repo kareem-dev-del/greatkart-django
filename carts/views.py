@@ -55,7 +55,7 @@ def add_cart(request, product_id):
 
 
 
-# دالة عرض السلة
+#3# دالة عرض السلة
 def cart(request, total=0,quantity=0,cart_item=None):
     try:
         cart = Cart.objects.get(cart_id=_cart_id(request))
