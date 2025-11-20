@@ -66,9 +66,10 @@ def remove_cart(request, product_id):
             cart_item.delete()
 
     except (Cart.DoesNotExist, CartItem.DoesNotExist, Product.DoesNotExist):
-        pass  # لو الحاجة مش موجودة، ما يعملش حاجة
+        pass  ### لو الحاجة مش موجودة، ما يعملش حاجة
 
     return redirect('cart')
+
    
 def remove_cart_item(request, product_id):
     cart = Cart.objects.get(cart_id=_cart_id(request))
