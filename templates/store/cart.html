@@ -22,40 +22,46 @@
 </tr>
 </thead>
 <tbody>
-<tr>
-	<td>
-		<figure class="itemside align-items-center">
-			<div class="aside"><img src="{% static './images/items/11.jpg' %}" class="img-sm"></div>
-			<figcaption class="info">
-				<a href="#" class="title text-dark">Camera Canon EOS M50 Kit</a>
-				<p class="text-muted small">Matrix: 25 Mpx <br> Brand: Canon</p>
-			</figcaption>
-		</figure>
-	</td>
-	<td> 
-		<!-- col.// -->
-					<div class="col"> 
-						<div class="input-group input-spinner">
-							<div class="input-group-prepend">
-							<button class="btn btn-light" type="button" id="button-plus"> <i class="fa fa-minus"></i> </button>
-							</div>
-							<input type="text" class="form-control"  value="1">
-							<div class="input-group-append">
-							<button class="btn btn-light" type="button" id="button-minus"> <i class="fa fa-plus"></i> </button>
-							</div>
-						</div> <!-- input-group.// -->
-					</div> <!-- col.// -->
-	</td>
-	<td> 
-		<div class="price-wrap"> 
-			<var class="price">$1156.00</var> 
-			<small class="text-muted"> $315.20 each </small> 
-		</div> <!-- price-wrap .// -->
-	</td>
-	<td class="text-right"> 
-	<a href="" class="btn btn-danger"> Remove</a>
-	</td>
-</tr>
+	
+{% for card_item in cart_items  %}
+		
+	
+		
+	<tr>
+		<td>
+			<figure class="itemside align-items-center">
+				<div class="aside"><img src="{{ card_item.product.images.url   }}" class="img-sm"></div>
+				<figcaption class="info">
+					<a href="#" class="title text-dark">{{ card_item.product.product_name}}</a>
+					<p class="text-muted small">Color: 25 Mpx <br> Size: Canon</p>
+				</figcaption>
+			</figure>
+		</td>
+		<td> 
+			<!-- col.// -->
+						<div class="col"> 
+							<div class="input-group input-spinner">
+								<div class="input-group-prepend">
+								<button class="btn btn-light" type="button" id="button-plus"> <i class="fa fa-minus"></i> </button>
+								</div>
+								<input type="text" class="form-control"  value="{{ card_item.quantity }}">
+								<div class="input-group-append">
+								<button class="btn btn-light" type="button" id="button-minus"> <i class="fa fa-plus"></i> </button>
+								</div>
+							</div> <!-- input-group.// -->
+						</div> <!-- col.// -->
+		</td>
+		<td> 
+			<div class="price-wrap"> 
+				<var class="price"> $ {{ card_item.total }}</var> 
+				<small class="text-muted"> $ {{ card_item.product.price }} each </small> 
+			</div> <!-- price-wrap .// -->
+		</td>
+		<td class="text-right"> 
+		<a href="" class="btn btn-danger"> Remove</a>
+		</td>
+	</tr>
+{% endfor %}
 
 </tbody>
 </table>

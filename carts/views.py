@@ -3,8 +3,6 @@ from store.models import Product
 from .models  import Cart, CartItem
 from django.core.exceptions import ObjectDoesNotExist
 
-
-from django.http import HttpResponse
 # هذه الدالة مسؤولة عن إرجاع session id الخاص بالمستخدم
 def _cart_id(request):
     # نحاول الحصول على session key الحالي
