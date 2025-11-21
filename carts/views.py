@@ -37,7 +37,7 @@ def add_cart(request, product_id):
     ### ثانيًا نحاول إيجاد العنصر داخل السلة (CartItem)
     try:
         cart_item = CartItem.objects.get(product=product, cart=cart)
-       ## # لو موجود بالفعل → نزيد الكمية
+       ## # لو موجود بالفعل → نزيد الكمية#
         cart_item.quantity += 1
         cart_item.save()
     except CartItem.DoesNotExist:
