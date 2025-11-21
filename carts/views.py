@@ -34,7 +34,7 @@ def add_cart(request, product_id):
     cart.save()   # حفظ السلة (رغم أن create يحفظ تلقائيًا، لكن لا ضرر)
 
     
-    # ثانيًا نحاول إيجاد العنصر داخل السلة (CartItem)
+    ### ثانيًا نحاول إيجاد العنصر داخل السلة (CartItem)
     try:
         cart_item = CartItem.objects.get(product=product, cart=cart)
        ## # لو موجود بالفعل → نزيد الكمية
