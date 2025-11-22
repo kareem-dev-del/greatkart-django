@@ -49,7 +49,7 @@ def add_cart(request, product_id):
         )
         cart_item.save()
 
-    # بعد الانتهاء نعيد التوجيه إلى صفحة السلة
+   # # بعد الانتهاء نعيد التوجيه إلى صفحة السلة
     return redirect('cart')
 
 
