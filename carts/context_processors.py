@@ -1,5 +1,5 @@
 from .models import Cart, CartItem
-from . import _cart_id
+from .views import _cart_id
  
   
 def counter(request):
