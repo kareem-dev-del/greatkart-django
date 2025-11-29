@@ -141,7 +141,7 @@
       <main class="col-md-9">
         <header class="border-bottom mb-4 pb-3">
           <div class="form-inline">
-            <span class="mr-md-auto"><b>{{products|length}}</b> items found</span>
+            <span class="mr-md-auto"><b>{{product_count}}</b> items found</span>
           </div>
         </header>
         <!-- sect-heading-->
@@ -179,18 +179,10 @@
 
         <nav class="mt-4" aria-label="Page navigation sample">
           
-          {% if product.has_other_pages %}
+          
             
           
             <ul class="pagination">
-              
-              {% if product.has_other_pages %}
-               <li class="page-item">
-                <a class="page-link" href="?pages={{product.previous_page_number}}">Previous</a>
-              </li>
-                
-              {% endif %}
-                
               <li class="page-item disabled">
                 <a class="page-link" href="#">Previous</a>
               </li>
@@ -201,7 +193,7 @@
               <li class="page-item"><a class="page-link" href="#">3</a></li>
               <li class="page-item"><a class="page-link" href="#">Next</a></li>
             </ul>
-          {% endif %}
+        
         </nav>
       </main>
       <!-- col.// -->

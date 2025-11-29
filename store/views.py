@@ -10,25 +10,34 @@ from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 
 
 # Create your views here.
-def store(request,category_slug=None):
+def store(request, category_slug=None):
     categories = None
     products = None
 
-    if category_slug !=None:
-        categories = get_object_or_404(Category, slug=category_slug) 
+    if category_slug != None:
+        categories = get_object_or_404(Category, slug=category_slug)
         products = Product.objects.filter(category=categories, is_available=True)
+
+        paginator = Paginator(products, 1)   # نفس الرقم اللي ظاهر عندك
+        page = request.GET.get('page')
+        paged_products = paginator.get_page(page)
+        product_count = products.count()
+
     else:
         products = Product.objects.all().filter(is_available=True)
-    paginator = Paginator(products, 20)
-    page = request.GET.get('page')
-    paged_product = paginator.get_page(page)
-   
-    context ={
-        'products': paged_product,
-       'count': products.count(),
+
+        paginator = Paginator(products, 3)    # نفس الرقم اللي ظاهر عندك
+        page = request.GET.get('page')
+        paged_products = paginator.get_page(page)
+        product_count = products.count()
+
+    context = {
+        'products': paged_products,
+        'product_count': product_count,
     }
-    
-    return render(request, 'store/store.html',context)
+
+    return render(request, 'store/store.html', context)
+
 
 
 
