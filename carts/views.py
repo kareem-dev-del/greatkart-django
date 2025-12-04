@@ -83,6 +83,9 @@ def remove_cart_item(request, product_id):
 
 #3# دالة عرض السلة
 def cart(request, total=0,quantity=0,cart_item=None):
+    tax=0
+    grand_total=0
+    cart_items = []
     try:
         cart = Cart.objects.get(cart_id=_cart_id(request))
         cart_items= CartItem.objects.filter(cart=cart, is_active=True)
@@ -99,7 +102,7 @@ def cart(request, total=0,quantity=0,cart_item=None):
     context ={
         'total': total,
         'quantity': quantity,
-       'cart_items' : cart_items,
+       'cart_items': cart_items,
        'tax' : tax,
        'grand_total' : grand_total,
     }

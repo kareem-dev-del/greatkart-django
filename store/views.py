@@ -24,7 +24,7 @@ def store(request, category_slug=None):
         product_count = products.count()
 
     else:
-        products = Product.objects.all().filter(is_available=True)
+        products = Product.objects.all().filter(is_available=True).order_by('id')
 
         paginator = Paginator(products, 3)    # نفس الرقم اللي ظاهر عندك
         page = request.GET.get('page')
