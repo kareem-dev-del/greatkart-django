@@ -154,16 +154,12 @@
         </header>
         <!-- sect-heading-->
 
-        <div class="row">
+      <div class="row">
         
         {% if products %}
           
-        
-            
-          
             {% for product in  products %}
             
-          
               <div class="col-md-4">
                 <figure class="card card-product-grid">
                   <div class="img-wrap">
@@ -187,12 +183,12 @@
               </div>
               <!-- col.// -->
           {% endfor %}
-         {% else %}
+        {% else %}
             <div style="color: #FF4500; font-weight: bold; text-align: center; margin: 30px 0;">
              <h3>No result found. Please try again..</h3>
             </div>
 
-          </div>
+      </div>
        {% endif %}
         <!-- row end.// -->
 
