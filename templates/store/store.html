@@ -1,9 +1,17 @@
 {% extends 'base.html' %} {% block content %}
 {% load static %}
 <!-- ========================= SECTION PAGETOP ========================= -->
+  
+ 
+    
 <section class="section-pagetop bg">
   <div class="container">
-    <h2 class="title-page">Our Store</h2>
+    {% if "search" in request.puth %}
+        <h2 class="title-page">Search Result</h2>
+     {% else %}
+        <h2 class="title-page">Our Store</h2>
+    
+     {% endif %}
   </div>
   <!-- container //  -->
 </section>
