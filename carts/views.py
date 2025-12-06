@@ -21,8 +21,8 @@ def _cart_id(request):
 # دالة إضافة منتج إلى السلة
 def add_cart(request, product_id):
     color = request.GET['color']
-    size = request.GET['size']
-    return HttpResponse(color + ' ' + size)
+    # size = request.GET['size']
+    return HttpResponse(color )
     exit()
 
     # الحصول على المنتج الذي يريد المستخدم إضافته
