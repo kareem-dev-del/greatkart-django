@@ -21,9 +21,11 @@ def _cart_id(request):
 # دالة إضافة منتج إلى السلة
 def add_cart(request, product_id):
     if request.method == 'POST':
-       color = request.POST['color']
-       size = request.POST['size']
-       print(color , size)
+        color = request.POST.get('color')
+        size  = request.POST.get('size')
+        print("DEBUG:", color, size)
+        return HttpResponse(f"Color: {color}, Size: {size}")
+    return HttpResponse("Send a POST request")
        
 
     # الحصول على المنتج الذي يريد المستخدم إضافته
