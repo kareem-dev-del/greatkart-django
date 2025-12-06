@@ -36,5 +36,6 @@ class Variation(models.Model):
 
 
 
-    def __str__(self):
+    def unicode(self):
         return self.product
+   
