@@ -1,6 +1,7 @@
 from django.db import models
 from category.models import Category
 from django.urls import reverse
+from django.core.exceptions import ValidationError
 
 # Create your models here.
 class Product(models.Model):
@@ -49,6 +50,15 @@ class Variation(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['product', 'variation_value'], name='unique_variation_per_product')
         ]
+
+    def clean(self):
+        # تحقق إذا كان هناك نفس القيمة لنفس المنتج
+        if Variation.objects.filter(product=self.product, variation_value=self.variation_value).exclude(pk=self.pk).exists():
+            raise ValidationError("هذه القيمة موجودة بالفعل لهذا المنتج.")
+
+    def save(self, *args, **kwargs):
+        self.clean()  # ينفذ التحقق قبل الحفظ
+        super().save(*args, **kwargs)    
 
 
 

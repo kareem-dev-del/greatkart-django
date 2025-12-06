@@ -20,10 +20,11 @@ def _cart_id(request):
 
 # دالة إضافة منتج إلى السلة
 def add_cart(request, product_id):
-    color = request.GET['color']
-    # size = request.GET['size']
-    return HttpResponse(color )
-    exit()
+    if request.method == 'POST':
+       color = request.POST['color']
+       size = request.POST['size']
+       print(color , size)
+       
 
     # الحصول على المنتج الذي يريد المستخدم إضافته
     product = get_object_or_404(Product, id=product_id)
