@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from store.models import Product 
+from store.models import Product ,Variation
 from .models  import Cart, CartItem
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib import messages 
@@ -20,12 +20,19 @@ def _cart_id(request):
 
 # دالة إضافة منتج إلى السلة
 def add_cart(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    product_variatin =[]
     if request.method == 'POST':
-        color = request.POST.get('color')
-        size  = request.POST.get('size')
-        print("DEBUG:", color, size)
-        return HttpResponse(f"Color: {color}, Size: {size}")
-    return HttpResponse("Send a POST request")
+      for item in request.POST:
+        key=item
+        value=request.POST[key]
+       
+
+        try:
+          variation = Variation.objects.get(product=product, variation_category__iexact=key, variation_value__iexact=value)
+          product_variatin.append(variation)
+        except:
+           pass  
        
 
     # الحصول على المنتج الذي يريد المستخدم إضافته

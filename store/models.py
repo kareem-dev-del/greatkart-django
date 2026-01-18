@@ -14,7 +14,7 @@ class Product(models.Model):
     is_available    =models.BooleanField(default=True)
     category        =models.ForeignKey(Category, on_delete=models.CASCADE)
     created_date    =models.DateTimeField(auto_now_add=True)
-    modified_date   =models.DateTimeField(auto_now_add=True)
+    modified_date   =models.DateTimeField(auto_now=True)
 
     def get_url(self):
         return reverse('product_detail',args=[self.category.slug, self.slug])
@@ -57,11 +57,12 @@ class Variation(models.Model):
             raise ValidationError("هذه القيمة موجودة بالفعل لهذا المنتج.")
 
     def save(self, *args, **kwargs):
-        self.clean()  # ينفذ التحقق قبل الحفظ
+        self.full_clean() # ينفذ التحقق قبل الحفظ
         super().save(*args, **kwargs)    
 
 
 
-    def unicode(self):
-        return self.product
+    def __str__(self):
+     return f"{self.product.product_name} - {self.variation_value}"
+
    
