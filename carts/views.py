@@ -52,6 +52,11 @@ def add_cart(request, product_id):
    # #### ثانيًا نحاول إيجاد العنصر داخل السلة (CartItem)
     try:
         cart_item = CartItem.objects.get(product=product, cart=cart)
+        if len(product_variatin) > 0:
+            cart_item.variations.clear()
+            for item in product_variatin:
+              cart_item.variations.add(item)
+
        ## # لو موجود بالفعل → نزيد الكمية#
         cart_item.quantity += 1
         cart_item.save()
@@ -62,6 +67,10 @@ def add_cart(request, product_id):
             quantity=1,
             cart=cart
         )
+        if len(product_variatin) > 0:
+           cart_item.variations.clear()
+           for item in product_variatin:
+              cart_item.variations.add(item)
         cart_item.save()
 
    # # بعد الانتهاء نعيد التوجيه إلى صفحة السلة

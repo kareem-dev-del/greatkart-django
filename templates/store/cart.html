@@ -45,7 +45,19 @@
 					<div class="aside"><img src="{{ card_item.product.images.url   }}" class="img-sm"></div>
 					<figcaption class="info">
 						<a href="{{ card_item.product.get_url }}" class="title text-dark">{{ card_item.product.product_name}}</a>
-						<p class="text-muted small">Color: 25 Mpx <br> Size: Canon</p>
+						<p class="text-muted small">
+							
+							{% if card_item.variations.all %}
+							  
+							  {% for item  in card_item.variations.all %}
+							    {{ item.variation_category|capfirst }} : {{ item.variation_value|capfirst}} <br>
+								
+							  {% endfor %}
+								
+								
+							{% endif %}
+								
+						</p>
 					</figcaption>
 				</figure>
 			</td>
