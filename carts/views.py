@@ -17,88 +17,92 @@ def _cart_id(request):
     return cart
 
 
-
-# دالة إضافة منتج إلى السلة
 def add_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
-    product_variatin =[]
+    product_variation = []
+
     if request.method == 'POST':
-      for item in request.POST:
-        key=item
-        value=request.POST[key]
-       
+        for key, value in request.POST.items():
+            try:
+                variation = Variation.objects.get(
+                    product=product,
+                    variation_category__iexact=key,
+                    variation_value__iexact=value
+                )
+                product_variation.append(variation)
+            except Variation.DoesNotExist:
+                pass
 
-        try:
-          variation = Variation.objects.get(product=product, variation_category__iexact=key, variation_value__iexact=value)
-          product_variatin.append(variation)
-        except:
-           pass  
-       
-
-    # الحصول على المنتج الذي يريد المستخدم إضافته
-    product = get_object_or_404(Product, id=product_id)
-
-    # أولًا نحاول إيجاد السلة الخاصة بالمستخدم بناءً على session id
     try:
         cart = Cart.objects.get(cart_id=_cart_id(request))
     except Cart.DoesNotExist:
-        # لو السلة غير موجودة، ننشئ واحدة جديدة
-        cart = Cart.objects.create(
-            cart_id=_cart_id(request)
-        )
-    cart.save()   # حفظ السلة (رغم أن create يحفظ تلقائيًا، لكن لا ضرر)
+        cart = Cart.objects.create(cart_id=_cart_id(request))
+    cart.save()
 
-    
-   # #### ثانيًا نحاول إيجاد العنصر داخل السلة (CartItem)
-    try:
-        cart_item = CartItem.objects.get(product=product, cart=cart)
-        if len(product_variatin) > 0:
-            cart_item.variations.clear()
-            for item in product_variatin:
-              cart_item.variations.add(item)
+    cart_items = CartItem.objects.filter(product=product, cart=cart)
 
-       ## # لو موجود بالفعل → نزيد الكمية#
-        cart_item.quantity += 1
-        cart_item.save()
-    except CartItem.DoesNotExist:
-     #  # ### لو المنتج لسه أول مرة يدخل السلة → ننشئ عنصر جديد#
+    if cart_items.exists():
+        ex_var_list = []
+        ids = []
+
+        for item in cart_items:
+            existing_variation = list(item.variations.all())
+            ex_var_list.append(existing_variation)
+            ids.append(item.id)
+
+        if product_variation in ex_var_list:
+            index = ex_var_list.index(product_variation)
+            item_id = ids[index]
+            item = CartItem.objects.get(id=item_id)
+            item.quantity += 1
+            item.save()
+        else:
+            cart_item = CartItem.objects.create(
+                product=product,
+                quantity=1,
+                cart=cart
+            )
+            if product_variation:
+                cart_item.variations.add(*product_variation)
+            cart_item.save()
+
+    else:
         cart_item = CartItem.objects.create(
             product=product,
             quantity=1,
             cart=cart
         )
-        if len(product_variatin) > 0:
-           cart_item.variations.clear()
-           for item in product_variatin:
-              cart_item.variations.add(item)
+        if product_variation:
+            cart_item.variations.add(*product_variation)
         cart_item.save()
 
-   # # بعد الانتهاء نعيد التوجيه إلى صفحة السلة
     return redirect('cart')
 
 
-def remove_cart(request, product_id):
-    try:
+def remove_cart(request, product_id, cart_item_id):
+    
         cart = Cart.objects.get(cart_id=_cart_id(request))
-        product = Product.objects.get(id=product_id)
-        cart_item = CartItem.objects.get(product=product, cart=cart)
+        product = get_object_or_404(Product,id=product_id)
+        try:
 
-        if cart_item.quantity > 1:
-            cart_item.quantity -= 1
-            cart_item.save()
-        else:
-            cart_item.delete()
+            cart_item = CartItem.objects.get(product=product, cart=cart, id=cart_item_id)
 
-    except (Cart.DoesNotExist, CartItem.DoesNotExist, Product.DoesNotExist):
-        pass  ### لو الحاجة مش موجودة، ما يعملش حاجة
+            if cart_item.quantity > 1:
+                cart_item.quantity -= 1
+                cart_item.save()
+            else:
+                cart_item.delete()
 
-    return redirect('cart')
+        except:
+            pass  ### لو الحاجة مش موجودة، ما يعملش حاجة
+
+        return redirect('cart')
 
    
-def remove_cart_item(request, product_id):
+def remove_cart_item(request, product_id, cart_item_id):
     cart = Cart.objects.get(cart_id=_cart_id(request))
     product = get_object_or_404(Product,id=product_id)
-    cart_item = CartItem.objects.get(product=product, cart=cart)
+    cart_item = CartItem.objects.get(product=product, cart=cart , id=cart_item_id)
     cart_item.delete()
     return redirect('cart')
 
